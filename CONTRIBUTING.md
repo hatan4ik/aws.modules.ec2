@@ -123,4 +123,4 @@ Releases are cut by maintainers.
    source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # vX.Y.Z
    ```
 
-Tags are never moved or deleted once published. A bad release is followed by a new patch release. The first release, 1.0.0, additionally waits for a real apply of the module (see Integration suites).
+Tags are never moved or deleted once published. A bad release is followed by a new patch release. `v0.1.0` is the first release and is explicitly pre-1.0. `v1.0.0` additionally waits for a real apply of the module (see Integration suites).

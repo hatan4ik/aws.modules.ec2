@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-15
+
+First release. Pre-1.0 on purpose: the module has never been applied against a real AWS account, so the interface may still change in a minor version until `v1.0.0`.
+
 ### Added
 
 - First content of the module, not yet released and never applied against a real AWS account: the 97 contract tests in `tests/` run against a mock provider and prove the rendered configuration and the validations only.
@@ -30,4 +34,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `single_instance_refresh_has_downtime` considers `max_size = 1` only; `broad_instance_role` is a text match, not a policy analyser.
 - Not provided: security groups (including the port 22 rule), subnets, KMS keys, load balancers, spot or mixed instances, lifecycle hooks, warm pools, scheduled actions, step scaling, notifications, key material generation, Session Manager preferences, and a standalone `aws_instance`.
 
-[Unreleased]: https://github.com/hatan4ik/aws.modules.ec2/commits/main
+[Unreleased]: https://github.com/hatan4ik/aws.modules.ec2/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/hatan4ik/aws.modules.ec2/releases/tag/v0.1.0

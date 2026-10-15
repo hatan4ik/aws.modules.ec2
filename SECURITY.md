@@ -4,9 +4,9 @@
 
 | Version | Supported |
 | --- | --- |
-| Unreleased `main` | The only line. No release has been tagged yet, and `main` is not yet supported for production use. |
+| `v0.1.x` and `main` | The only line. `v0.1.0` has never been applied against a real AWS account and is not yet supported for production use. |
 
-The first release will be `v1.0.0`; this table is updated when it is cut. `aws.modules.ec2` has never been applied against a real AWS account, so treat every finding in this policy as a contribution to that first release, not as a regression.
+`v1.0.0` follows the first real apply of the integration suite; this table is updated when it is cut. `aws.modules.ec2` has never been applied against a real AWS account, so treat every finding in this policy as a contribution to that first release, not as a regression.
 
 ## Reporting a vulnerability
 

@@ -1,6 +1,6 @@
 # Design: aws.modules.ec2 v1
 
-Status: draft for 1.0.0, not yet released and never applied against a real AWS account. Everything below is checked by `terraform test` against a mock provider (97 `run` blocks) or by reading the code; none of it has been observed on live infrastructure. Where a statement depends on how AWS behaves, it says whether that comes from documentation or from inference.
+Status: released as v0.1.0 (pre-1.0; the interface may change in a minor version until v1.0.0), never applied against a real AWS account. Everything below is checked by `terraform test` against a mock provider (97 `run` blocks) or by reading the code; none of it has been observed on live infrastructure. Where a statement depends on how AWS behaves, it says whether that comes from documentation or from inference.
 
 ## Purpose
 

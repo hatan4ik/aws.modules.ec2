@@ -3,7 +3,7 @@
 Provisions one private EC2 fleet per module call: a launch template, an Auto Scaling group, and, unless you bring your own, the instance role and instance profile the instances run under. A single instance is a group with `min_size = max_size = 1`; there is no separate single-instance mode, so an instance that fails is always replaced. The module is secure by default and the defaults that matter are not inputs: IMDSv2 is required, every volume the module declares is encrypted, instances get no public IPv4 address, and there is no key pair by default, so the way in is SSM Session Manager through the instance role. A key pair is an explicit opt-in through `access` (see [Choosing how to get in](#choosing-how-to-get-in)); Session Manager stays the platform standard. Requires Terraform >= 1.7 and the AWS provider >= 6.35, < 7.
 
 > [!IMPORTANT]
-> **Status: unreleased, and never applied against a real AWS account.** The 97 contract tests run against `mock_provider`, so they prove the rendered configuration and the validations, not that EC2, Auto Scaling, IAM, or KMS accept it. Every statement below about how AWS behaves comes from AWS documentation or from reading the code, not from an observed run. Treat the first real apply as the first integration test. No `v1.0.0` tag exists yet; see [Versioning and releases](#versioning-and-releases).
+> **Status: `v0.1.0`, a pre-1.0 release that has never been applied against a real AWS account.** The 97 contract tests run against `mock_provider`, so they prove the rendered configuration and the validations, not that EC2, Auto Scaling, IAM, or KMS accept it. Every statement below about how AWS behaves comes from AWS documentation or from reading the code, not from an observed run. Treat the first real apply as the first integration test. The `v0.x` line signals exactly that: the interface may still change in a minor version until `v1.0.0`, which waits for a real apply; see [Versioning and releases](#versioning-and-releases).
 
 ## Why this module
 
@@ -25,7 +25,7 @@ What you get from `name`, `subnet_ids`, `security_group_ids`, an image, and an `
 
 ```hcl
 module "orders_worker" {
-  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v1.0.0 once released
+  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v0.1.0
 
   name                   = "orders-worker"
   subnet_ids             = ["subnet-0a1b2c3d4e5f60001", "subnet-0a1b2c3d4e5f60002"]
@@ -76,7 +76,7 @@ module "orders_key" {
 }
 
 module "orders_worker" {
-  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v1.0.0 once released
+  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v0.1.0
 
   name                   = "orders-worker"
   subnet_ids             = values(module.vpc.subnet_ids_by_tier["private"])
@@ -130,7 +130,7 @@ A key pair alone opens nothing. Without the inbound rule the instance is not rea
 
 ```hcl
 module "legacy_batch" {
-  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v1.0.0 once released
+  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v0.1.0
 
   name                   = "legacy-batch"
   subnet_ids             = ["subnet-0a1b2c3d4e5f60001", "subnet-0a1b2c3d4e5f60002"]
@@ -304,13 +304,13 @@ What the module deliberately does **not** do:
 
 ## Versioning and releases
 
-Releases follow semantic versioning: incompatible interface changes bump the major version, new optional inputs and outputs bump the minor version, fixes bump the patch version. Every release is a signed annotated tag `vX.Y.Z`. No release has been cut yet; the first will be `v1.0.0`.
+Releases follow semantic versioning: incompatible interface changes bump the major version, new optional inputs and outputs bump the minor version, fixes bump the patch version. Every release is a signed annotated tag `vX.Y.Z`. The first release is `v0.1.0`. While the major version is 0, a minor version may change the interface; `v1.0.0` follows the first real apply of the integration suite.
 
 Pin the full commit SHA of the release tag and record the tag in a comment, so the source cannot move under you:
 
 ```hcl
 module "orders_worker" {
-  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v1.0.0
+  source = "git::https://github.com/hatan4ik/aws.modules.ec2.git?ref=<commit-sha>" # v0.1.0
 }
 ```
 
