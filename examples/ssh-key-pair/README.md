@@ -7,9 +7,10 @@ module; this example shows the opt-in for workloads that need SSH too.
 
 > **Not applied against a real account.** This example has been checked with
 > `terraform fmt`, `terraform init -backend=false` and `terraform validate`.
-> It has never been applied to an AWS account: no key pair has been registered,
-> no instance has launched, and no SSH or Session Manager session has been
-> opened through it. The port 22 composition below was written from another
+> This example itself has not been applied. The module's key pair registration
+> and rotation were observed live on 2026-10-15 (see
+> [Live evidence](../../tests/integration/README.md#live-evidence-2026-10-15)), but no SSH or Session Manager session has
+> been opened through it. The port 22 composition below was written from another
 > module's usage of `aws.modules.security-group` and has not been validated.
 
 ## Choosing how operators get in
@@ -43,7 +44,7 @@ state. The public key is stored in state, which is fine: it is public.
   launching with that key pair. `instance_refresh` is `min 100 / max 200`, so a
   launch template change is configured to launch the replacement before
   terminating the old instance (the documented way to avoid an outage window
-  with one instance; not observed here).
+  with one instance; observed once on 2026-10-15 in a similar group).
 - One IAM role and instance profile named `ssh-key-pair-example-instance`, with
   `AmazonSSMManagedInstanceCore` attached (because `access = "both"`).
 
@@ -60,7 +61,7 @@ encrypted. It creates no security group and no inbound rule.
 | `security_group_ids` | Existing groups. For SSH, one must allow inbound TCP 22 from your bastion or VPN range, **never `0.0.0.0/0`**. They must also allow outbound HTTPS for Session Manager. |
 | A route for Session Manager | A NAT gateway or the `ssm`, `ssmmessages`, and `ec2messages` VPC endpoints. |
 | A network path for SSH | A bastion host, VPN, or Direct Connect that can reach the private subnet on port 22. The instance has no public IPv4 address. |
-| `kms_key_arn` (optional) | The full ARN of a customer managed key. Without it the volumes use the AWS managed `aws/ebs` key and `volumes_use_aws_managed_key` warns. The key policy needs the Auto Scaling service-linked role; the `autoscaling-ebs` preset of `aws.modules.kms` (a release newer than v2.0.0) is shown in [`complete`](../complete). |
+| `kms_key_arn` (optional) | The full ARN of a customer managed key. Without it the volumes use the AWS managed `aws/ebs` key and `volumes_use_aws_managed_key` warns. The key policy needs the Auto Scaling service-linked role; the `autoscaling-ebs` preset of `aws.modules.kms` (v2.1.0 or later) is shown in [`complete`](../complete). |
 | `region` | Any region where the instance type and AMI parameter exist. The platform rule that limits it to US regions is recorded in `docs/ARCHITECTURE.md` of `devops-aws-infra`. |
 
 ## Generate a key pair

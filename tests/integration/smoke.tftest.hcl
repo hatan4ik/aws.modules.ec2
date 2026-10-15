@@ -28,9 +28,9 @@
 # path (the module registering the key itself) is covered only by the mocked
 # contract tests in tests/, not here.
 #
-# This suite has never been run. It was written against the module's contract
-# tests and the provider schema; the first real run is expected to need
-# adjustments (see tests/integration/README.md).
+# This suite ran once, on 2026-10-15, with administrator credentials in a
+# sandbox account, and passed (see "Live evidence" in tests/integration/README.md).
+# It has not run under the least-privilege CI role.
 #
 # Run: terraform init -backend=false -test-directory=tests/integration
 #      terraform test -test-directory=tests/integration \

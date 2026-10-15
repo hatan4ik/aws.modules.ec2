@@ -11,8 +11,9 @@ creates them in the caller's own account before the module under test and
 destroys them afterwards. They are not a deployable pattern and are excluded
 from policy scans (see `.checkov.yml` and `trivy.yaml` at the repository root).
 
-> **Status: never applied.** These fixtures validate (`terraform fmt`, `init`,
-> `validate`) and nothing more. No real AWS account has seen them.
+> **Status: applied once, 2026-10-15,** by `smoke.tftest.hcl` in a sandbox
+> account with administrator credentials, and destroyed afterwards. The
+> fixtures have not been exercised under the least-privilege CI role.
 
 ## Prerequisites an administrator creates once
 
@@ -65,13 +66,11 @@ and to create grants for AWS resources; without it the group cannot launch and
 the run fails at `wait_for_capacity_timeout`. The fixture cannot read the policy
 back, so it cannot check this. With `aws.modules.kms` the statements are a
 preset (`service_grants = { AutoScalingEbs = { service = "autoscaling-ebs" } }`),
-which at the time of writing is merged on that module's `main` and not in a
-tagged release (v2.0.0 does not contain it); pin a commit of a later release
-once one is tagged:
+which first shipped in v2.1.0 (commit `66f78e1c4ef81a3fbf36af8133f4a632a2e80f27`):
 
 ```hcl
 module "integration_volume_key" {
-  source = "git::https://github.com/hatan4ik/aws.modules.kms.git?ref=<commit-sha of a release newer than v2.0.0>"
+  source = "git::https://github.com/hatan4ik/aws.modules.kms.git?ref=66f78e1c4ef81a3fbf36af8133f4a632a2e80f27" # v2.1.0"
 
   description = "Disposable volume key for the aws.modules.ec2 integration suite"
   aliases     = ["ec2-integration/volumes"]
@@ -93,7 +92,7 @@ module "integration_volume_key" {
 }
 ```
 
-A `kms` release that predates the preset takes the same two statements through
+A `kms` release before v2.1.0 takes the same two statements through
 `policy_statements` (placeholder account ID):
 
 ```hcl
@@ -119,8 +118,8 @@ policy_statements = {
 }
 ```
 
-Neither snippet has been planned against `aws.modules.kms` or accepted by the
-KMS API from this repository. Replace the `<REGION>`, `<ACCOUNT_ID>`, and
+The preset snippet was applied for real on 2026-10-15 and accepted by KMS; the
+`policy_statements` fallback was not applied. Replace the `<REGION>`, `<ACCOUNT_ID>`, and
 `<KEY_ID>` placeholders of `iam/integration-permissions-policy.json` with this
 key's Region, account, and key ID.
 

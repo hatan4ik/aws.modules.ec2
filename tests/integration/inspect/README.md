@@ -23,7 +23,7 @@ The timer is re-created, and so waits again, whenever
 
 Like `setup/`, it is validated and linted by `make validate`, `make lint`, and
 `make docs-check` and excluded from the Checkov and Trivy scans (`.checkov.yml`,
-`trivy.yaml`). It has never run against a real account.
+`trivy.yaml`). It ran once against a real account on 2026-10-15, as part of the suite.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

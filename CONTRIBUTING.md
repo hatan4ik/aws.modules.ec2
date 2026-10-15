@@ -26,7 +26,7 @@ The module has a single root and no submodules, so `ROOT_DIRS` in the `Makefile`
 
 ## Integration suites
 
-`tests/integration/` is for a credential-driven suite that applies the module for real in your own account and destroys everything afterwards. It is never part of `make check` or the quality pipeline. The module has not been applied against a real account yet, so a first run is a release prerequisite, not a formality. The suite does not create its own KMS key: an administrator pre-creates one disposable, tagged volume key once (see the prerequisites in `tests/integration/README.md`) and you export its ARN as `AWS_INTEGRATION_KMS_KEY_ARN`, which the `make` target requires. Run it against an account you control, never one that holds production:
+`tests/integration/` is for a credential-driven suite that applies the module for real in your own account and destroys everything afterwards. It is never part of `make check` or the quality pipeline. The module was applied once, on 2026-10-15, with administrator credentials (see the Live evidence section of `tests/integration/README.md`); a run under the least-privilege CI role is still outstanding. The suite does not create its own KMS key: an administrator pre-creates one disposable, tagged volume key once (see the prerequisites in `tests/integration/README.md`) and you export its ARN as `AWS_INTEGRATION_KMS_KEY_ARN`, which the `make` target requires. Run it against an account you control, never one that holds production:
 
 ```bash
 export AWS_PROFILE=<profile> AWS_REGION=<region>

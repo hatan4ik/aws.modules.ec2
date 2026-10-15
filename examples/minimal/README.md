@@ -7,8 +7,8 @@ Session Manager is the way in; no key pair is created or selected.
 > **Not applied against a real account.** This example has been checked with
 > `terraform fmt`, `terraform init -backend=false` and `terraform validate`,
 > which prove the HCL is well formed and type-checks against the module's
-> interface. It has never been applied to an AWS account, no instance has been
-> launched from it, and nothing in this README has been observed running.
+> interface. This example itself has not been applied; the module it calls was
+> applied once on 2026-10-15 (see [Live evidence](../../tests/integration/README.md#live-evidence-2026-10-15)).
 
 ## What it creates
 

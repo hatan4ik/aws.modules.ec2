@@ -6,8 +6,11 @@ is `instance_refresh`.
 
 > **Not applied against a real account.** This example has been checked with
 > `terraform fmt`, `terraform init -backend=false` and `terraform validate`.
-> It has never been applied to an AWS account, so the refresh behavior described
-> here comes from the Auto Scaling documentation, not from an observed run.
+> This example itself has not been applied. The module's `min 100 / max 200`
+> refresh was observed once, on 2026-10-15, in a similar one-instance group:
+> the replacement launched before the old instance terminated (see
+> [Live evidence](../../tests/integration/README.md#live-evidence-2026-10-15)). The rest comes from the Auto Scaling
+> documentation.
 
 ## The problem it solves
 

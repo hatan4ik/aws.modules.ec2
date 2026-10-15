@@ -6,9 +6,10 @@ each input, then copy the parts you need.
 
 > **Not applied against a real account.** This example has been checked with
 > `terraform fmt`, `terraform init -backend=false` and `terraform validate`.
-> It has never been applied to an AWS account: no instance has launched, no
-> target has registered, and the user data and the KMS key policy below have
-> not been exercised.
+> This example itself has not been applied: no load balancer target has
+> registered through it and its user data has not run. The module it calls, and
+> the key policy the preset renders, were exercised live on 2026-10-15 (see
+> [Live evidence](../../tests/integration/README.md#live-evidence-2026-10-15)).
 
 ## What it creates
 
@@ -65,14 +66,12 @@ policy the group cannot launch instances; the failure shows up in the scaling
 activity history rather than as a Terraform error on the key. The exact error
 text was not verified.
 
-`aws.modules.kms` has a preset for exactly this. It needs a release **newer than
-v2.0.0**: the preset is merged on `main` and sits in the Unreleased section of
-that module's changelog, so `v2.0.0` does not contain it. Pin a commit of a
-later release once one is tagged.
+`aws.modules.kms` has a preset for exactly this. It needs release **v2.1.0 or
+later** (commit `66f78e1c4ef81a3fbf36af8133f4a632a2e80f27`); `v2.0.0` does not contain it.
 
 ```hcl
 module "fleet_key" {
-  source = "git::https://github.com/hatan4ik/aws.modules.kms.git?ref=<commit-sha of a release newer than v2.0.0>"
+  source = "git::https://github.com/hatan4ik/aws.modules.kms.git?ref=66f78e1c4ef81a3fbf36af8133f4a632a2e80f27" # v2.1.0"
 
   description = "EBS key for the complete-example fleet"
   aliases     = ["complete-example/ebs"]
@@ -101,7 +100,7 @@ Pass `module.fleet_key.arn` as `kms_key_arn`. Two things to know:
 
   Creating it fails if the account already has it, so add this only for an
   account that has never used Auto Scaling, and make the key depend on it.
-- **A kms release that predates the preset** needs the same two statements
+- **A kms release before v2.1.0** needs the same two statements
   through `policy_statements`. This is the fallback shape, with placeholder
   account IDs:
 

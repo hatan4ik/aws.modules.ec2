@@ -4,9 +4,9 @@
 
 | Version | Supported |
 | --- | --- |
-| `v0.1.x` and `main` | The only line. `v0.1.0` has never been applied against a real AWS account and is not yet supported for production use. |
+| `v0.1.x` and `main` | The only line. `v0.1.1` was applied once in a sandbox account (2026-10-15) and is not yet supported for production use. |
 
-`v1.0.0` follows the first real apply of the integration suite; this table is updated when it is cut. `aws.modules.ec2` has never been applied against a real AWS account, so treat every finding in this policy as a contribution to that first release, not as a regression.
+`v1.0.0` is intended to follow a run of the integration suite under the least-privilege CI role; this table is updated when it is cut. The module has had one live apply, with administrator credentials, so treat a finding in this policy as a contribution to the first stable release, not as a regression.
 
 ## Reporting a vulnerability
 

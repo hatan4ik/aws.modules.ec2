@@ -7,15 +7,13 @@ documentation placeholder account `123456789012` and fake resource IDs on
 purpose: they prove the module's interface and rendering, not that AWS accepts
 it. These suites prove the latter.
 
-> **Status: never run.** `aws.modules.ec2` has not been applied against a real
-> AWS account, and neither has this suite. The fixture and the inspector
-> validate (`terraform fmt`, `init`, `validate`), and the test file's wiring
-> and assertion expressions were exercised only against mocked providers or
-> not at all. The permissions policy was written from the provider's API calls
-> and AWS's documented condition keys and has never been tried; expect the
-> first real run to need adjustments, most likely to
-> [`iam/integration-permissions-policy.json`](iam/integration-permissions-policy.json).
-> Treat a green first run as the first evidence, not a formality.
+> **Status: run once, under administrator credentials.** On 2026-10-15 the
+> suite was applied in a sandbox account (us-east-2) and destroyed afterwards:
+> `5 passed, 0 failed` in about 15 minutes, with nothing left behind. See
+> [Live evidence](#live-evidence-2026-10-15) for what that does and does not
+> prove. It was **not** run with the CI role: the permissions policy in
+> [`iam/integration-permissions-policy.json`](iam/integration-permissions-policy.json)
+> has never been tried and is still the most likely thing to need adjustment.
 
 Nothing here is tied to an account, region, or landing zone. Credentials and
 the region come from the environment, and the volume key is a variable. Every
@@ -35,6 +33,49 @@ for each configuration. It does not exercise an in-place launch template roll,
 and it does not exercise the module registering the key pair itself
 (`key_pair_public_key`); that path is covered only by the mocked contract
 tests in `tests/`.
+
+## Live evidence (2026-10-15)
+
+Where: a non-production sandbox account, us-east-2, credentials with
+administrator rights (not the CI role). The Auto Scaling service-linked role did
+not exist in that account and was created first, which confirms that
+prerequisite is real. The volume key was created with `aws.modules.kms` v2.1.0
+and its `autoscaling-ebs` preset, so the preset was exercised too.
+
+| Run | Result |
+| --- | --- |
+| `smoke.tftest.hcl` (setup, `ssm` fleet, SSM inspection, `both` fleet, SSM inspection) | 5 passed, 0 failed, about 15 minutes, torn down by the test; a region sweep found nothing left over |
+| A second throwaway stack (two private subnets, no endpoints), module registering its own key pair with `access = "key_pair"` | Applied, rotated, rolled, and destroyed |
+
+What is proven by those runs:
+
+- KMS accepts the two statements the preset renders, and an Auto Scaling group
+  can then launch instances whose volumes are encrypted under the key.
+- `resolve:ssm:` is accepted together with the explicit network interface.
+- The instance has `HttpTokens = required`, no public IPv4 address, one root
+  device, a volume encrypted under the customer managed key, and the fleet tags
+  on instance and volume. With interface endpoints and no NAT it registers with
+  Systems Manager (Online).
+- The module registers a public key as a key pair (`key_name_prefix`), and
+  rotating that key creates the new key pair before the old one is removed, with
+  no name collision.
+- A launch template change rolls the group in place with `min 100 / max 200`:
+  the scaling activity history shows the launch before the termination.
+
+What is **not** proven:
+
+- The CI role and `iam/integration-permissions-policy.json`: the runs used
+  administrator rights.
+- An SSH session through a real port 22 rule, and Session Manager logging.
+- `encrypted = true` together with a `snapshot_id`; `protect_from_scale_in`
+  with a refresh; IPv6; arm64; a partition other than `aws`; the default 90
+  refresh band; the advisory checks on a live group.
+- Cost: not measured.
+
+Observed operational notes: `terraform init -test-directory` in the module root
+writes the `random` and `time` providers into `.terraform.lock.hcl`; discard
+that change (see below). The run needs the account's service-linked role and a
+volume key to exist first, as described under Prerequisites.
 
 ## What it creates
 
@@ -241,7 +282,7 @@ does not cancel a run in progress, so a second dispatch queues behind the
 first instead of killing it halfway through a destroy.
 
 For this repository's owner the environment still has to be prepared: no role
-or key exists yet for this repository, and the module has never been applied in
-any account. Create the role through the platform's delivery IAM module with the
+or key exists yet for this repository, and the suite has only ever run with
+administrator credentials. Create the role through the platform's delivery IAM module with the
 trust policy above and the subject
 `repo:hatan4ik/aws.modules.ec2:environment:integration`.

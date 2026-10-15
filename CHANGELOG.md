@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-15
+
+Documentation only: no module, test, or interface change. Records the first live
+apply and corrects statements that the live run and the `aws.modules.kms`
+v2.1.0 release made stale.
+
+### Changed
+
+- README, `docs/DESIGN.md`, `SECURITY.md`, `CONTRIBUTING.md`, the examples, and
+  the integration suite's READMEs now state that the module was applied once, on
+  2026-10-15, in a sandbox account with administrator credentials, and point to
+  the new "Live evidence" section of `tests/integration/README.md`: what was
+  proven, and what was not (the CI role, SSH through a real rule, snapshot
+  restore, IPv6, arm64, other partitions, the default 90 refresh band).
+- The `autoscaling-ebs` preset is documented as shipped in `aws.modules.kms`
+  v2.1.0 (commit `66f78e1c4ef81a3fbf36af8133f4a632a2e80f27`) and the examples pin that commit.
+- Key pair rotation is documented as observed: the replacement is created before
+  the old key pair is deleted, with no name collision (`key_name_prefix`).
+
 ## [0.1.0] - 2026-10-15
 
 First release. Pre-1.0 on purpose: the module has never been applied against a real AWS account, so the interface may still change in a minor version until `v1.0.0`.
@@ -34,5 +53,6 @@ First release. Pre-1.0 on purpose: the module has never been applied against a r
 - `single_instance_refresh_has_downtime` considers `max_size = 1` only; `broad_instance_role` is a text match, not a policy analyser.
 - Not provided: security groups (including the port 22 rule), subnets, KMS keys, load balancers, spot or mixed instances, lifecycle hooks, warm pools, scheduled actions, step scaling, notifications, key material generation, Session Manager preferences, and a standalone `aws_instance`.
 
-[Unreleased]: https://github.com/hatan4ik/aws.modules.ec2/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/hatan4ik/aws.modules.ec2/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/hatan4ik/aws.modules.ec2/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/hatan4ik/aws.modules.ec2/releases/tag/v0.1.0
