@@ -1,0 +1,8 @@
+# tests/integration/setup and tests/integration/inspect are short-lived test
+# infrastructure and a read-only inspector for the integration suites, created
+# and destroyed by `terraform test` in the caller's own account; they are not
+# deployable patterns and are excluded from misconfiguration scanning together.
+scan:
+  skip-dirs:
+    - tests/integration/setup
+    - tests/integration/inspect

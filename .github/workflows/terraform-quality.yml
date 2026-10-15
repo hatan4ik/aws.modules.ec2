@@ -1,0 +1,32 @@
+name: terraform-quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    strategy:
+      fail-fast: false
+      matrix:
+        directory:
+          - .
+          - examples/minimal
+          - examples/complete
+          - examples/single-instance
+          - examples/ssh-key-pair
+          - tests/integration/setup
+          - tests/integration/inspect
+    uses: hatan4ik/terraform-pipelines/.github/workflows/terraform-quality.yml@8fc2a04c7931dd449097bb92b15b085278e3f67a # v0.1.1
+    with:
+      working_directory: ${{ matrix.directory }}
+      check_docs: true
